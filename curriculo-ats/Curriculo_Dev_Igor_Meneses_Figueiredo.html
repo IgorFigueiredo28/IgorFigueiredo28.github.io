@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Curriculo_Dev_Igor_Meneses_Figueiredo</title><style>
+@page { size: A4; margin: 9mm 13mm; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 9.1pt/1.27 Arial, Helvetica, sans-serif; color: #111; }
+h1 { font-size: 19pt; margin: 0; letter-spacing: .3px; }
+.title { font-size: 11pt; font-weight: bold; color: #2A7A36; margin: 1mm 0 1.2mm; }
+.contact { font-size: 9pt; color: #333; }
+h2 { font-size: 10.5pt; text-transform: uppercase; letter-spacing: .6px; color: #2A7A36; border-bottom: 1px solid #9BC8A0; padding-bottom: .8mm; margin: 2.6mm 0 1.2mm; }
+p { margin: 0; }
+.job { margin-bottom: 1.8mm; }
+.job-line { display: flex; justify-content: space-between; gap: 4mm; }
+.job-head { font-weight: bold; }
+.job-meta { color: #444; font-size: 9pt; white-space: nowrap; }
+ul { margin: .8mm 0 0; padding-left: 4.6mm; }
+li { margin-bottom: .3mm; }
+a { color: inherit; text-decoration: none; }
+</style></head>
+<body>
+<h1>IGOR MENESES FIGUEIREDO</h1>
+<div class="title">Desenvolvedor Full Stack | TypeScript · Node.js · React · Python</div>
+<div class="contact">Sumaré/SP · <a href="mailto:ams.igorfigueiredo@gmail.com">ams.igorfigueiredo@gmail.com</a><br>
+<a href="https://www.linkedin.com/in/igor-meneses-figueiredo/">linkedin.com/in/igor-meneses-figueiredo</a> · <a href="https://github.com/IgorFigueiredo28">github.com/IgorFigueiredo28</a> · <a href="https://igorfigueiredo28.github.io"><b>Portfólio: igorfigueiredo28.github.io</b></a></div>
+
+<h2>Resumo</h2>
+<p>Desenvolvedor full stack formado em Análise e Desenvolvimento de Sistemas, com 1 ano e meio de estágio em desenvolvimento na IBM. Criei e mantenho o FrogShare, app desktop de transmissão de tela em tempo real (Electron, WebRTC, áudio nativo em C#); desenvolvi o módulo de Analytics da plataforma LaneGG (React, Supabase, Riot API); e tive um servidor MCP para o Microsoft Teams aceito no repositório open source da deco. Do suporte e da infraestrutura, trago visão de produção: monitoramento, logs e incidentes.</p>
+
+<h2>Projetos</h2>
+<div class="job"><div class="job-line"><span class="job-head">FrogShare · app desktop de transmissão de tela</span><span class="job-meta"><a href='https://frogshare.onrender.com'>frogshare.onrender.com</a> · <a href='https://github.com/IgorFigueiredo28/frogshare'>GitHub</a></span></div><ul><li>Desenvolvi app em Electron que transmite jogos com o áudio de um único processo, capturado por módulo nativo em C# (WASAPI process loopback).</li><li>Implementei pipeline de vídeo na GPU com codificação H.264 por NVENC, AMF ou QuickSync e controle de ritmo de quadros para não perder frames com o jogo ocupando a placa.</li><li>Construí o servidor de sinalização em Node.js (Express, Socket.IO) e conexão WebRTC P2P com fallback para TURN e SFU da Cloudflare em salas grandes.</li><li>Automatizei a distribuição por GitHub Releases com atualização automática verificada por SHA-512 e mantive as dependências sem vulnerabilidades conhecidas (npm audit, Dependabot).</li></ul></div>
+<div class="job"><div class="job-line"><span class="job-head">LaneGG · plataforma de coaching de League of Legends (projeto em equipe)</span><span class="job-meta"><a href='https://www.lanegg.com.br'>lanegg.com.br</a></span></div><ul><li>Desenvolvi o módulo de Analytics em React: perfil do jogador, histórico, mapa interativo da partida com linha do tempo e comparação de desempenho com jogadores Challenger por rota e por campeão.</li><li>Implementei Edge Function em Deno/TypeScript que consome a Riot API com controle de cota, cache de 24h e testes automatizados com fixtures.</li><li>Evoluí o banco PostgreSQL (Supabase) com migrações SQL para elo, runas, itens e confrontos por rota, entregando por pull requests revisados.</li></ul></div>
+<div class="job"><div class="job-line"><span class="job-head">Servidor MCP para Microsoft Teams · contribuição open source (deco)</span><span class="job-meta"><a href='https://github.com/decocms/mcps/pull/444'>github.com/decocms/mcps/pull/444</a></span></div><ul><li>Criei servidor MCP em TypeScript com 34 ferramentas sobre a Microsoft Graph API: canais, chats, reuniões e gatilho de novas mensagens.</li><li>Implementei OAuth 2.0 com PKCE, notificações de alteração do Graph e estado em Cloudflare Workers KV; PR revisado e incorporado ao repositório oficial.</li></ul></div>
+
+<h2>Experiência</h2>
+<div class="job"><div class="job-line"><span class="job-head">Supervisor de Help Desk — Globals</span><span class="job-meta">Americana/SP | ago/2025 – abr/2026</span></div><ul><li>Liderei equipe de 5 analistas N1/N2 no setor bancário; monitoramento com Grafana e logs na AWS.</li></ul></div>
+<div class="job"><div class="job-line"><span class="job-head">Assistente de Infraestrutura de TI — Goodbom</span><span class="job-meta">Sumaré/SP | ago/2024 – ago/2025</span></div><ul><li>Sustentei ERP de varejo e PDVs em 3 unidades, com suporte N1/N2 e administração de usuários e ativos de TI.</li></ul></div>
+<div class="job"><div class="job-line"><span class="job-head">Estagiário de Desenvolvimento de Software — IBM</span><span class="job-meta">Hortolândia/SP | jun/2022 – dez/2023</span></div><ul><li>Desenvolvi aplicações web com Python, Flask, AngularJS e TypeScript em squad ágil (Scrum/Kanban).</li><li>Criei e integrei APIs REST, com versionamento no GitHub e pipelines de CI/CD, acelerando a entrega de novas funcionalidades.</li></ul></div>
+
+<h2>Competências técnicas</h2>
+<ul><li><b>Linguagens:</b> JavaScript, TypeScript, Python, C#, SQL, HTML, CSS.</li><li><b>Front-end:</b> React, Vite, AngularJS, interfaces responsivas, SEO.</li><li><b>Back-end e APIs:</b> Node.js, Express, Flask, Deno, Socket.IO, APIs REST, webhooks, OAuth 2.0, Microsoft Graph API, MCP.</li><li><b>Tempo real e desktop:</b> Electron, WebRTC, TURN/SFU, captura de áudio nativa (WASAPI), codificação de vídeo na GPU.</li><li><b>Dados e cloud:</b> PostgreSQL, Supabase (RLS, Auth, Realtime, Edge Functions), AWS, Cloudflare Workers, Render, Vercel.</li><li><b>Ferramentas e práticas:</b> Git/GitHub, pull requests, CI/CD, testes automatizados, Grafana, Scrum, Kanban.</li></ul>
+
+<h2>Formação e certificações</h2>
+<p style="margin-bottom:.6mm"><b>Tecnólogo em Análise e Desenvolvimento de Sistemas</b> — Fatec Americana (P-TECH/IBM) | 2022 – 2023</p><p style="margin-bottom:.6mm"><b>Técnico em Análise e Desenvolvimento de Sistemas</b> — Etec Polivalente de Americana | 2019 – 2021</p>
+<p><b>Agile Explorer</b> — Open P-TECH (IBM) | 2021</p>
+
+<h2>Idiomas</h2>
+<p>Português: nativo · Inglês: intermediário · Espanhol: básico</p>
+</body></html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Resume_Dev_Igor_Meneses_Figueiredo_EN</title><style>
+@page { size: A4; margin: 9mm 13mm; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 9.1pt/1.27 Arial, Helvetica, sans-serif; color: #111; }
+h1 { font-size: 19pt; margin: 0; letter-spacing: .3px; }
+.title { font-size: 11pt; font-weight: bold; color: #2A7A36; margin: 1mm 0 1.2mm; }
+.contact { font-size: 9pt; color: #333; }
+h2 { font-size: 10.5pt; text-transform: uppercase; letter-spacing: .6px; color: #2A7A36; border-bottom: 1px solid #9BC8A0; padding-bottom: .8mm; margin: 2.6mm 0 1.2mm; }
+p { margin: 0; }
+.job { margin-bottom: 1.8mm; }
+.job-line { display: flex; justify-content: space-between; gap: 4mm; }
+.job-head { font-weight: bold; }
+.job-meta { color: #444; font-size: 9pt; white-space: nowrap; }
+ul { margin: .8mm 0 0; padding-left: 4.6mm; }
+li { margin-bottom: .3mm; }
+a { color: inherit; text-decoration: none; }
+</style></head>
+<body>
+<h1>IGOR MENESES FIGUEIREDO</h1>
+<div class="title">Full Stack Developer | TypeScript · Node.js · React · Python</div>
+<div class="contact">Sumaré, SP, Brazil · <a href="mailto:ams.igorfigueiredo@gmail.com">ams.igorfigueiredo@gmail.com</a><br>
+<a href="https://www.linkedin.com/in/igor-meneses-figueiredo/">linkedin.com/in/igor-meneses-figueiredo</a> · <a href="https://github.com/IgorFigueiredo28">github.com/IgorFigueiredo28</a> · <a href="https://igorfigueiredo28.github.io"><b>Portfolio: igorfigueiredo28.github.io</b></a></div>
+
+<h2>Summary</h2>
+<p>Full stack developer with a degree in Systems Analysis and Development and 1.5 years as a software development intern at IBM. I built and maintain FrogShare, a real-time screen streaming desktop app (Electron, WebRTC, native audio in C#); built the Analytics module of the LaneGG platform (React, Supabase, Riot API); and had a Microsoft Teams MCP server merged into deco's open source repository. From support and infrastructure, I bring a production mindset: monitoring, logs and incidents.</p>
+
+<h2>Projects</h2>
+<div class="job"><div class="job-line"><span class="job-head">FrogShare · screen streaming desktop app</span><span class="job-meta"><a href='https://frogshare.onrender.com'>frogshare.onrender.com</a> · <a href='https://github.com/IgorFigueiredo28/frogshare'>GitHub</a></span></div><ul><li>Built an Electron app that streams games with the audio of a single process, captured by a native C# module (WASAPI process loopback).</li><li>Implemented a GPU video pipeline with H.264 encoding via NVENC, AMF or QuickSync and frame pacing to avoid dropped frames while the game loads the GPU.</li><li>Built the Node.js signaling server (Express, Socket.IO) and P2P WebRTC with fallback to Cloudflare TURN and SFU for large rooms.</li><li>Automated distribution through GitHub Releases with SHA-512-verified auto-updates and kept dependencies free of known vulnerabilities (npm audit, Dependabot).</li></ul></div>
+<div class="job"><div class="job-line"><span class="job-head">LaneGG · League of Legends coaching platform (team project)</span><span class="job-meta"><a href='https://www.lanegg.com.br'>lanegg.com.br</a></span></div><ul><li>Built the Analytics module in React: player profile, match history, interactive match map with timeline, and performance comparison against Challenger players by lane and champion.</li><li>Implemented a Deno/TypeScript Edge Function that consumes the Riot API with quota control, 24h caching and automated tests with fixtures.</li><li>Evolved the PostgreSQL database (Supabase) with SQL migrations for rank, runes, items and lane matchups, shipping through reviewed pull requests.</li></ul></div>
+<div class="job"><div class="job-line"><span class="job-head">Microsoft Teams MCP server · open source contribution (deco)</span><span class="job-meta"><a href='https://github.com/decocms/mcps/pull/444'>github.com/decocms/mcps/pull/444</a></span></div><ul><li>Created a TypeScript MCP server with 34 tools on top of the Microsoft Graph API: channels, chats, meetings and a new-message trigger.</li><li>Implemented OAuth 2.0 with PKCE, Graph change notifications and state in Cloudflare Workers KV; the PR was reviewed and merged into the official repository.</li></ul></div>
+
+<h2>Experience</h2>
+<div class="job"><div class="job-line"><span class="job-head">Help Desk Supervisor — Globals</span><span class="job-meta">Americana, Brazil | Aug 2025 – Apr 2026</span></div><ul><li>Led a team of 5 L1/L2 analysts in the banking sector; monitoring with Grafana and AWS logs.</li></ul></div>
+<div class="job"><div class="job-line"><span class="job-head">IT Infrastructure Assistant — Goodbom</span><span class="job-meta">Sumaré, Brazil | Aug 2024 – Aug 2025</span></div><ul><li>Supported retail ERP and POS across 3 sites, with L1/L2 support and user and IT asset administration.</li></ul></div>
+<div class="job"><div class="job-line"><span class="job-head">Software Development Intern — IBM</span><span class="job-meta">Hortolândia, Brazil | Jun 2022 – Dec 2023</span></div><ul><li>Built web applications with Python, Flask, AngularJS and TypeScript in an agile squad (Scrum/Kanban).</li><li>Created and integrated REST APIs with GitHub version control and CI/CD pipelines, speeding up feature delivery.</li></ul></div>
+
+<h2>Technical skills</h2>
+<ul><li><b>Languages:</b> JavaScript, TypeScript, Python, C#, SQL, HTML, CSS.</li><li><b>Front-end:</b> React, Vite, AngularJS, responsive interfaces, SEO.</li><li><b>Back-end & APIs:</b> Node.js, Express, Flask, Deno, Socket.IO, REST APIs, webhooks, OAuth 2.0, Microsoft Graph API, MCP.</li><li><b>Real-time & desktop:</b> Electron, WebRTC, TURN/SFU, native audio capture (WASAPI), GPU video encoding.</li><li><b>Data & cloud:</b> PostgreSQL, Supabase (RLS, Auth, Realtime, Edge Functions), AWS, Cloudflare Workers, Render, Vercel.</li><li><b>Tools & practices:</b> Git/GitHub, pull requests, CI/CD, automated tests, Grafana, Scrum, Kanban.</li></ul>
+
+<h2>Education and certifications</h2>
+<p style="margin-bottom:.6mm"><b>Associate Degree in Systems Analysis and Development</b> — Fatec Americana (P-TECH/IBM) | 2022 – 2023</p><p style="margin-bottom:.6mm"><b>Technical Degree in Systems Analysis and Development</b> — Etec Polivalente de Americana | 2019 – 2021</p>
+<p><b>Agile Explorer</b> — Open P-TECH (IBM) | 2021</p>
+
+<h2>Languages</h2>
+<p>Portuguese: native · English: intermediate · Spanish: basic</p>
+</body></html>
