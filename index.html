@@ -117,6 +117,8 @@
   .btn-ghost { border-color: var(--line); background: var(--card); color: var(--ink); }
   .btn-ghost:hover { border-color: var(--green); }
   .btn-sm { padding: 9px 16px; font-size: 14px; }
+  .btn-icon { width: 48px; height: 48px; padding: 0; justify-content: center; }
+  .btn-icon svg { width: 20px; height: 20px; }
 
   /* hero */
   /* Brilhos do fundo: cada um some por completo antes da borda do hero, sem corte. */
@@ -223,6 +225,8 @@
   .cv .actions { position: relative; z-index: 1; }
   .cv .btn-primary { background: #fff; color: #2A8C3A; box-shadow: none; }
   .cv .btn-primary:hover { background: #D4F2CF; }
+  .cv .btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.55); }
+  .cv .btn-ghost:hover { border-color: #fff; }
 
   footer { padding: 40px 0 56px; color: var(--muted); font-size: 14px; }
   footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 28px; }
@@ -239,6 +243,9 @@
     .project:nth-child(even) .shot { order: 0; }
     .info { padding: 26px 22px; }
     .cv { padding: 30px 24px; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .stats div b { font-size: 24px; }
+    .stats div span { font-size: 13px; line-height: 1.35; display: block; }
     .wrap { padding: 0 16px; }
   }
   @media (max-width: 480px) {
@@ -257,7 +264,7 @@
       <a href="#experiencia" data-en="Experience">Experiência</a>
       <a href="#habilidades" data-en="Skills">Competências</a>
       <a href="#projetos" data-en="Projects">Projetos</a>
-      <a href="#curriculo" data-en="Resume">Currículo</a>
+      <a href="#contato" data-en="Contact">Contato</a>
     </div>
     <div class="nav-right">
       <button class="toggle lang" id="btn-lang" type="button" aria-label="Mudar idioma / Change language"><span class="l-pt">PT</span><span class="l-en">EN</span></button>
@@ -278,24 +285,18 @@
     <div>
       <h1 data-en="Hi, I'm <span>Igor Figueiredo</span>">Olá, eu sou o <span>Igor Figueiredo</span></h1>
       <p class="role" data-en="IT Support Analyst · Infrastructure · L1/L2">Analista de Suporte de TI · Infraestrutura · N1/N2</p>
-      <p class="lead" data-en="I keep IT operations running: L1 and L2 support, user administration, equipment maintenance, ERP and POS, monitoring and incident resolution, including leading a help desk team in the banking sector. As a differentiator, I build automations and systems that cut rework.">Mantenho a operação de TI funcionando: suporte N1 e N2, administração de usuários, manutenção de equipamentos, ERP e PDV, monitoramento e resolução de incidentes, incluindo a liderança de uma equipe de helpdesk no setor bancário. Como diferencial, desenvolvo automações e sistemas que reduzem retrabalho.</p>
+      <p class="lead" data-en="L1/L2 support and IT infrastructure, with experience in banking help desk and multi-site retail. I also build automations and integrations that cut rework.">Suporte N1/N2 e infraestrutura de TI, com experiência em helpdesk bancário e varejo com várias unidades. Também desenvolvo automações e integrações que reduzem retrabalho.</p>
       <div class="actions">
-        <a class="btn btn-primary" href="#experiencia">
-          <span data-en="See experience">Ver experiência</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
-        </a>
-        <a class="btn btn-ghost cv-link" href="curriculo-ats/Curriculo_Igor_Meneses_Figueiredo.pdf" download>
+        <a class="btn btn-primary cv-link" href="curriculo-ats/Curriculo_Igor_Meneses_Figueiredo.pdf" download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
           <span data-en="Download resume">Baixar currículo</span>
         </a>
-        <a class="btn btn-ghost" href="https://www.linkedin.com/in/igor-meneses-figueiredo/" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
-          LinkedIn
+        <a class="btn btn-ghost" href="#contato">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <span data-en="Get in touch">Fale comigo</span>
         </a>
-        <a class="btn btn-ghost" href="https://github.com/IgorFigueiredo28" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .5z"/></svg>
-          GitHub
-        </a>
+        <a class="btn btn-ghost btn-icon" href="https://www.linkedin.com/in/igor-meneses-figueiredo/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        <a class="btn btn-ghost btn-icon" href="https://github.com/IgorFigueiredo28" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .5z"/></svg></a>
       </div>
       <div class="stats">
         <div><b data-en="3+ years">3+ anos</b><span data-en="in IT">em TI</span></div>
@@ -339,6 +340,7 @@
     <div class="edu">
       <div><b>Fatec Americana</b><span data-en="Associate Degree in Systems Analysis and Development" style="color:inherit;font-size:inherit">Tecnólogo em Análise e Desenvolvimento de Sistemas</span><br><span>2022 – 2023</span></div>
       <div><b>Etec Polivalente de Americana</b><span data-en="Technical Degree in Systems Analysis and Development · P-TECH with IBM" style="color:inherit;font-size:inherit">Técnico em Análise e Desenvolvimento de Sistemas · P-TECH com a IBM</span><br><span>2019 – 2021</span></div>
+      <div><b data-en="Languages">Idiomas</b><span data-en="English: intermediate · Spanish: basic" style="color:inherit;font-size:inherit">Inglês: intermediário · Espanhol: básico</span><br><span data-en="Portuguese: native">Português: nativo</span></div>
     </div>
   </div>
 </section>
@@ -379,10 +381,41 @@
     <div class="sec-head">
       <small data-en="Projects · my differentiator">Projetos · meu diferencial</small>
       <h2 data-en="What I've built">O que eu construí</h2>
-      <p data-en="Beyond support, I build software. Two products live and used by real people, plus an open source contribution to deco.">Além do suporte, eu desenvolvo. Dois produtos no ar, usados por pessoas de verdade, e uma contribuição open source para a deco.</p>
+      <p data-en="Beyond support, I build software: an open source contribution to deco and two products live and used by real people.">Além do suporte, eu desenvolvo: uma contribuição open source para a deco e dois produtos no ar, usados por pessoas de verdade.</p>
     </div>
 
     <div class="projects">
+      <article class="project">
+        <div class="shot">
+          <div class="tools">
+            <div class="bar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h10a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2zm3 3v1.5h2V16h1.5v-5.5h2V9H7zm11-1a2.5 2.5 0 110-5 2.5 2.5 0 010 5zm-1 1h4a1 1 0 011 1v5a3 3 0 01-3 3h-1.2c.13-.32.2-.65.2-1V9z"/></svg>microsoft-teams · MCP</div>
+            <div class="grp"><small data-en="Channels">Canais</small><code>LIST_TEAMS</code><code>LIST_CHANNELS</code><code>SEND_MESSAGE</code><code>REPLY_TO_MESSAGE</code><code>EDIT_CHANNEL_MESSAGE</code><code>REACT_TO_CHANNEL_MESSAGE</code></div>
+            <div class="grp"><small>Chats</small><code>CREATE_PRIVATE_CHAT</code><code>CREATE_GROUP_CHAT</code><code>SEND_CHAT_MESSAGE</code><code>SEARCH_USERS_BY_NAME</code></div>
+            <div class="grp"><small data-en="Meetings">Reuniões</small><code>CREATE_MEETING</code><code>RESCHEDULE_MEETING</code><code>ACCEPT_MEETING</code><code>DECLINE_MEETING</code><code>CANCEL_MEETING</code></div>
+            <div class="grp"><small data-en="Triggers">Gatilhos</small><code>SUBSCRIBE_TO_CHANNEL</code><code>teams.message.received</code></div>
+            <div class="total" data-en="34 tools in total">34 ferramentas no total</div>
+          </div>
+        </div>
+        <div class="info">
+          <span class="kind" data-en="Open source contribution · deco">Contribuição open source · deco</span>
+          <h3 data-en="Microsoft Teams MCP">MCP do Microsoft Teams</h3>
+          <p data-en="An integration that lets AI agents use <strong>all the main Teams features</strong> on behalf of the user: messages, chats and meetings. Reviewed and merged into deco's official repository.">Integração que permite a agentes de IA usar <strong>todas as principais funções do Teams</strong> em nome do usuário: mensagens, chats e reuniões. Revisada e incorporada ao repositório oficial da deco.</p>
+          <ul>
+            <li data-en="Channels and chats: send, reply, edit and react to messages, search users">Canais e chats: enviar, responder, editar e reagir a mensagens, buscar usuários</li>
+            <li data-en="Teams meetings: create, reschedule, cancel, accept or decline invites">Reuniões do Teams: criar, remarcar, cancelar, aceitar ou recusar convites</li>
+            <li data-en="Secure Microsoft 365 sign-in (OAuth) and real-time alerts for new messages">Login Microsoft 365 seguro (OAuth) e aviso em tempo real de novas mensagens</li>
+          </ul>
+          <div class="chips"><span class="chip">Microsoft 365</span><span class="chip">Microsoft Graph API</span><span class="chip">OAuth 2.0</span><span class="chip">TypeScript</span><span class="chip">MCP</span></div>
+          <div class="actions">
+            <a class="btn btn-primary btn-sm" href="https://github.com/decocms/mcps/tree/main/microsoft-teams" target="_blank" rel="noopener">
+              <span data-en="View code">Ver código</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-sm" href="https://github.com/decocms/mcps/pull/444" target="_blank" rel="noopener">Pull request</a>
+          </div>
+        </div>
+      </article>
+
       <article class="project">
         <div class="shot">
           <div class="browser">
@@ -393,18 +426,13 @@
         <div class="info">
           <span class="kind" data-en="Desktop app + website · Windows and macOS">App desktop + site · Windows e macOS</span>
           <h3><img src="img/icon-256.png" alt=""> FrogShare</h3>
-          <p data-en="Stream a game or a window <strong>with the sound of one specific app</strong> (just the game, no Discord) to friends who watch right in the browser, with nothing to install.">Transmita um jogo ou uma janela <strong>com o som de um app específico</strong> (só o jogo, sem o Discord) para amigos que assistem direto no navegador, sem instalar nada.</p>
+          <p data-en="Streams a game or a window <strong>with the sound of one specific app</strong> to friends who watch right in the browser, with nothing to install.">Transmite um jogo ou uma janela <strong>com o som de um app específico</strong> para amigos que assistem direto no navegador, sem instalar nada.</p>
           <ul>
-            <li data-en="Per-process audio capture (WASAPI on Windows, Core Audio on macOS)">Captura de som por processo (WASAPI no Windows, Core Audio no macOS)</li>
-            <li data-en="H.264 encoding on the GPU (NVENC, AMF, QuickSync)">Codificação H.264 na placa de vídeo (NVENC, AMF, QuickSync)</li>
-            <li data-en="P2P with TURN relay and Cloudflare SFU for large audiences">P2P com relay TURN e SFU da Cloudflare para muitos espectadores</li>
-            <li data-en="Group streaming: up to 4 screens in the same room">Transmissão em grupo: até 4 telas na mesma sala</li>
-            <li data-en="Automatic updates with SHA-512 verification">Atualização automática com verificação SHA-512</li>
+            <li data-en="Works on any network, including strict NAT and mobile internet">Funciona em qualquer rede, inclusive atrás de NAT restrito e internet móvel</li>
+            <li data-en="Light while gaming: video is processed on the graphics card">Leve durante o jogo: o vídeo é processado na placa de vídeo</li>
+            <li data-en="Own installer with automatic updates and integrity checks">Instalador próprio com atualização automática e verificação de integridade</li>
           </ul>
-          <div class="chips">
-            <span class="chip">Electron</span><span class="chip">Node.js</span><span class="chip">WebRTC</span>
-            <span class="chip">Socket.IO</span><span class="chip">C#</span><span class="chip">Swift</span><span class="chip">Cloudflare</span>
-          </div>
+          <div class="chips"><span class="chip">Electron</span><span class="chip">Node.js</span><span class="chip">WebRTC</span><span class="chip">C#</span><span class="chip">Swift</span><span class="chip">Cloudflare</span></div>
           <div class="actions">
             <a class="btn btn-primary btn-sm" href="https://frogshare.onrender.com" target="_blank" rel="noopener">
               <span data-en="Visit site">Acessar site</span>
@@ -429,18 +457,13 @@
         <div class="info">
           <span class="kind" data-en="Web platform · formerly Jungle.gg">Plataforma web · antigo Jungle.gg</span>
           <h3>LaneGG</h3>
-          <p data-en="League of Legends coaching platform with a Challenger player: sells a course, group coaching and mentoring, and delivers all content inside the site.">Plataforma de coaching de League of Legends com um jogador Challenger: vende curso, coach em grupo e mentoria, e entrega todo o conteúdo dentro do próprio site.</p>
+          <p data-en="League of Legends coaching platform that sells courses and mentoring and delivers all content inside the site.">Plataforma de coaching de League of Legends que vende cursos e mentorias e entrega todo o conteúdo dentro do próprio site.</p>
           <ul>
-            <li data-en="Three lanes (Jungle, Mid, ADC) that recolor the whole site">Três lanes (Jungle, Mid, ADC) que recolorem o site inteiro</li>
-            <li data-en="Student area, scheduling with Google Calendar and Meet">Área do aluno, agendamento com Google Agenda e Meet</li>
-            <li data-en="Match analytics via Riot API, champion guides and community">Analytics de partidas via Riot API, guias de campeões e comunidade</li>
-            <li data-en="Training tools with real-time lobbies and 3D models">Ferramentas de treino com lobbies em tempo real e modelos 3D</li>
-            <li data-en="Payments via Kiwify, SEO with per-route pre-rendering">Pagamentos via Kiwify, SEO com pré-renderização por rota</li>
+            <li data-en="Sign-in, student area and automatic access after payment">Login, área do aluno e liberação automática de acesso após o pagamento</li>
+            <li data-en="Class scheduling integrated with Google Calendar and Meet">Agendamento de aulas integrado ao Google Agenda e ao Meet</li>
+            <li data-en="Match analysis using data from the official Riot Games API">Análise de partidas com dados da API oficial da Riot Games</li>
           </ul>
-          <div class="chips">
-            <span class="chip">React</span><span class="chip">Vite</span><span class="chip">Supabase</span>
-            <span class="chip">PostgreSQL</span><span class="chip">Edge Functions</span><span class="chip">Three.js</span><span class="chip">Vercel</span>
-          </div>
+          <div class="chips"><span class="chip">React</span><span class="chip">Supabase</span><span class="chip">PostgreSQL</span><span class="chip">Vercel</span><span class="chip">Riot API</span></div>
           <div class="actions">
             <a class="btn btn-primary btn-sm" href="https://www.lanegg.com.br" target="_blank" rel="noopener">
               <span data-en="Visit site">Acessar site</span>
@@ -449,57 +472,29 @@
           </div>
         </div>
       </article>
-
-      <article class="project">
-        <div class="shot">
-          <div class="tools">
-            <div class="bar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h10a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2zm3 3v1.5h2V16h1.5v-5.5h2V9H7zm11-1a2.5 2.5 0 110-5 2.5 2.5 0 010 5zm-1 1h4a1 1 0 011 1v5a3 3 0 01-3 3h-1.2c.13-.32.2-.65.2-1V9z"/></svg>microsoft-teams · MCP</div>
-            <div class="grp"><small data-en="Channels">Canais</small><code>LIST_TEAMS</code><code>LIST_CHANNELS</code><code>SEND_MESSAGE</code><code>REPLY_TO_MESSAGE</code><code>EDIT_CHANNEL_MESSAGE</code><code>REACT_TO_CHANNEL_MESSAGE</code></div>
-            <div class="grp"><small>Chats</small><code>CREATE_PRIVATE_CHAT</code><code>CREATE_GROUP_CHAT</code><code>SEND_CHAT_MESSAGE</code><code>SEARCH_USERS_BY_NAME</code></div>
-            <div class="grp"><small data-en="Meetings">Reuniões</small><code>CREATE_MEETING</code><code>RESCHEDULE_MEETING</code><code>ACCEPT_MEETING</code><code>DECLINE_MEETING</code><code>CANCEL_MEETING</code></div>
-            <div class="grp"><small data-en="Triggers">Gatilhos</small><code>SUBSCRIBE_TO_CHANNEL</code><code>teams.message.received</code></div>
-            <div class="total" data-en="34 tools in total">34 ferramentas no total</div>
-          </div>
-        </div>
-        <div class="info">
-          <span class="kind" data-en="Open source contribution · deco">Contribuição open source · deco</span>
-          <h3 data-en="Microsoft Teams MCP">MCP do Microsoft Teams</h3>
-          <p data-en="We contributed to deco an MCP (Model Context Protocol) server that gives AI agents access to <strong>all the main Teams features</strong>, through the Microsoft Graph API and on behalf of the signed-in user.">Contribuímos com a deco um servidor MCP (Model Context Protocol) que dá a agentes de IA acesso a <strong>todas as principais funções do Teams</strong>, pela Microsoft Graph API e em nome do usuário conectado.</p>
-          <ul>
-            <li data-en="Channels: list teams and channels, send, reply, edit and react to messages">Canais: listar equipes e canais, enviar, responder, editar e reagir a mensagens</li>
-            <li data-en="Private and group chats, with user search by name or email">Chats privados e em grupo, com busca de usuários por nome ou e-mail</li>
-            <li data-en="Teams meetings: create, reschedule, cancel, accept, decline or reply &quot;maybe&quot;">Reuniões com link do Teams: criar, remarcar, cancelar, aceitar, recusar ou responder "talvez"</li>
-            <li data-en="Real-time trigger when a message arrives in a subscribed channel">Gatilho em tempo real quando chega mensagem num canal assinado</li>
-            <li data-en="Microsoft 365 sign-in with OAuth (PKCE), running on Cloudflare Workers">Login Microsoft 365 com OAuth (PKCE), rodando em Cloudflare Workers</li>
-          </ul>
-          <div class="chips">
-            <span class="chip">TypeScript</span><span class="chip">MCP</span><span class="chip">Microsoft Graph API</span>
-            <span class="chip">OAuth 2.0</span><span class="chip">Cloudflare Workers</span>
-          </div>
-          <div class="actions">
-            <a class="btn btn-primary btn-sm" href="https://github.com/decocms/mcps/tree/main/microsoft-teams" target="_blank" rel="noopener">
-              <span data-en="View code">Ver código</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
-            </a>
-            <a class="btn btn-ghost btn-sm" href="https://github.com/decocms/mcps/pull/444" target="_blank" rel="noopener">Pull request</a>
-          </div>
-        </div>
-      </article>
     </div>
   </div>
 </section>
 
-<section id="curriculo">
+<section id="contato">
   <div class="wrap">
     <div class="cv">
       <div>
-        <h2 data-en="Want to know more?">Quer saber mais?</h2>
-        <p data-en="Download my resume in PDF with my support and infrastructure experience, education and projects.">Baixe meu currículo em PDF com experiência em suporte, infraestrutura, formação e projetos.</p>
+        <h2 data-en="Let's talk?">Vamos conversar?</h2>
+        <p data-en="I'm looking for IT Support and Infrastructure roles. Download my resume or reach me by email or LinkedIn.">Estou buscando oportunidades em Suporte e Infraestrutura de TI. Baixe meu currículo ou fale comigo por e-mail ou LinkedIn.</p>
       </div>
       <div class="actions">
         <a class="btn btn-primary cv-link" href="curriculo-ats/Curriculo_Igor_Meneses_Figueiredo.pdf" download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
-          <span data-en="Download resume (PDF)">Baixar currículo (PDF)</span>
+          <span data-en="Download resume">Baixar currículo</span>
+        </a>
+        <a class="btn btn-ghost" href="mailto:ams.igorfigueiredo@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <span data-en="Send email">Enviar e-mail</span>
+        </a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/igor-meneses-figueiredo/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          LinkedIn
         </a>
       </div>
     </div>
