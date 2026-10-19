@@ -144,6 +144,7 @@
   .hero-art .badge { position: absolute; bottom: 6%; left: -4%; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow); font-size: 13px; line-height: 1.3; }
   .hero-art .badge .ic { width: 36px; height: 36px; border-radius: 10px; background: var(--green-soft); color: var(--green-strong); display: grid; place-items: center; }
   .hero-art .badge .ic svg { width: 20px; height: 20px; }
+  .hero-art .badges { display: contents; }
   .hero-art .badge-anos { left: auto; bottom: auto; right: -2%; top: 10%; flex-direction: column; align-items: flex-start; gap: 0; padding: 10px 16px; }
   .hero-art .badge.badge-anos b { font-size: 24px; line-height: 1.1; }
   .hero-art .badge b { display: block; font-family: Fredoka; font-size: 15px; color: var(--green-strong); }
@@ -252,7 +253,14 @@
     .hero { padding: 48px 0 48px; }
     .hero .wrap, .project { grid-template-columns: 1fr; }
     .hero-art { order: -1; }
-    .hero-art .blob { width: 220px; }
+    .hero-art .blob { width: 230px; margin-bottom: 30px; }
+    /* Foto pequena: os dois selos descem para baixo dela, lado a lado, e deixam o rosto livre */
+    .hero-art .badges { display: flex; gap: 8px; position: absolute; left: 50%; bottom: -24px; transform: translateX(-50%); }
+    .hero-art .badges .badge { position: static; padding: 8px 12px; }
+    .hero-art .badges .badge-anos { order: 2; }
+    .hero-art .badge .ic { width: 30px; height: 30px; }
+    .hero-art .badge { white-space: nowrap; font-size: 12px; }
+    .hero-art .badge.badge-anos b { font-size: 20px; }
     .project:nth-child(even) .shot { order: 0; }
     .info { padding: 26px 22px; }
     .cv { padding: 30px 24px; }
@@ -314,10 +322,12 @@
     </div>
     <div class="hero-art"><div class="blob">
       <img class="photo" src="img/igor.jpg" alt="Foto de Igor Figueiredo" data-en-alt="Photo of Igor Figueiredo">
-      <div class="badge badge-anos"><b data-en="3+ years">3+ anos</b><span data-en="in IT">em TI</span></div>
-      <div class="badge">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-6h3zM3 19a2 2 0 002 2h1v-6H3z"/></svg></div>
-        <div><b data-en="L1/L2 Support">Suporte N1/N2</b><span data-en="+ development">+ desenvolvimento</span></div>
+      <div class="badges">
+        <div class="badge badge-anos"><b data-en="3+ years">3+ anos</b><span data-en="in IT">em TI</span></div>
+        <div class="badge">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-6h3zM3 19a2 2 0 002 2h1v-6H3z"/></svg></div>
+          <div><b data-en="L1/L2 Support">Suporte N1/N2</b><span data-en="+ development">+ desenvolvimento</span></div>
+        </div>
       </div>
     </div></div>
   </div>
