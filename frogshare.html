@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FrogShare, estudo de caso | Igor Figueiredo</title>
 <meta name="description" content="Como eu construí o FrogShare: app para Windows e Mac, site para assistir e transmitir pelo navegador, vídeo na placa de vídeo, servidor de mídia da Cloudflare e monitoramento em produção no Grafana.">
+<link rel="canonical" href="https://igorfigueiredo28.github.io/frogshare">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://igorfigueiredo28.github.io/frogshare">
+<meta property="og:title" content="FrogShare, estudo de caso | Igor Figueiredo">
+<meta property="og:description" content="Como eu construí o FrogShare: app para Windows e Mac, site para assistir e transmitir pelo navegador, vídeo na placa de vídeo, servidor de mídia da Cloudflare e monitoramento em produção no Grafana.">
+<meta property="og:image" content="https://igorfigueiredo28.github.io/img/frogshare-painel.png">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +19,11 @@
 <script>
   // Aplica tema e idioma antes do primeiro paint (evita piscar). Mesmas escolhas da página principal.
   (function () {
+    // O endereço é /frogshare. O GitHub Pages também serve /frogshare.html (links antigos), e aí a barra mostra o limpo.
+    // Num arquivo aberto do disco isso falha, por isso fica separado do tema e do idioma.
+    try {
+      if (/\/frogshare\.html$/.test(location.pathname)) history.replaceState(null, "", "frogshare" + location.search + location.hash);
+    } catch (e) {}
     try {
       var t = localStorage.getItem("tema");
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
@@ -189,9 +200,9 @@
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="index.html"><img src="img/favicon.svg" alt=""><span>Igor <b>Figueiredo</b></span></a>
+    <a class="logo" href="./"><img src="img/favicon.svg" alt=""><span>Igor <b>Figueiredo</b></span></a>
     <div class="nav-right">
-      <a class="back" href="index.html#projetos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><span data-en="All projects">Todos os projetos</span></a>
+      <a class="back" href="./#projetos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><span data-en="All projects">Todos os projetos</span></a>
       <button class="toggle lang" id="btn-lang" type="button" aria-label="Mudar idioma / Change language"><span class="l-pt">PT</span><span class="l-en">EN</span></button>
       <button class="toggle" id="btn-tema" type="button" aria-label="Alternar tema claro/escuro">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
@@ -431,7 +442,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
           <span data-en="App for Windows">App para Windows</span>
         </a>
-        <a class="btn btn-ghost" href="index.html#projetos"><span data-en="Other projects">Outros projetos</span></a>
+        <a class="btn btn-ghost" href="./#projetos"><span data-en="Other projects">Outros projetos</span></a>
       </div>
     </div>
   </div>
@@ -440,7 +451,7 @@
 <footer>
   <div class="wrap">
     <span>© 2026 Igor Meneses Figueiredo</span>
-    <span><a href="index.html" data-en="Portfolio">Portfólio</a> · <a href="https://github.com/IgorFigueiredo28" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/igor-meneses-figueiredo/" target="_blank" rel="noopener">LinkedIn</a></span>
+    <span><a href="./" data-en="Portfolio">Portfólio</a> · <a href="https://github.com/IgorFigueiredo28" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/igor-meneses-figueiredo/" target="_blank" rel="noopener">LinkedIn</a></span>
   </div>
 </footer>
 

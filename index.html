@@ -211,6 +211,23 @@
   .chip { font-size: 13px; padding: 4px 11px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); }
   .info .actions { margin-top: auto; }
 
+  /* estudo de caso: faixa no pé do card do FrogShare, a peça que mais chama atenção na seção */
+  .case {
+    grid-column: 1 / -1; order: 3;
+    display: grid; grid-template-columns: 220px 1fr auto; grid-template-areas: "img title btn" "img desc btn";
+    column-gap: 26px; row-gap: 4px; align-items: center;
+    padding: 22px 34px; background: var(--green-soft); border-top: 1px solid var(--line);
+    text-decoration: none; color: var(--ink);
+  }
+  .case img { grid-area: img; display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top left;
+    border-radius: 10px; box-shadow: var(--shot-shadow); transition: transform .2s; }
+  .case b { grid-area: title; align-self: end; font-family: Fredoka; font-size: 21px; font-weight: 600; line-height: 1.2; text-wrap: balance; }
+  .case .desc { grid-area: desc; align-self: start; color: var(--muted); font-size: 15px; max-width: 560px; text-wrap: pretty; }
+  .case .btn { grid-area: btn; }
+  .case:hover img { transform: translateY(-3px); }
+  .case:hover .btn-primary { background: #2A8C3A; transform: translateY(-1px); }
+  .case:focus-visible { outline: 3px solid var(--green); outline-offset: -3px; }
+
   /* stack de desenvolvimento */
   .stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-bottom: 18px; }
   .stack > div { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
@@ -249,6 +266,8 @@
   footer a { text-decoration: none; font-weight: 500; }
   footer a:hover { color: var(--green-strong); }
 
+  /* Com cinco links o menu só cabe na largura máxima; abaixo dela o estudo de caso fica na faixa do card */
+  @media (max-width: 1119px) { .links .nav-case { display: none; } }
   @media (max-width: 960px) { .links { display: none; } }
   @media (max-width: 860px) {
     .hero { padding: 48px 0 48px; }
@@ -264,6 +283,9 @@
     .hero-art .badge.badge-anos b { font-size: 20px; }
     .project:nth-child(even) .shot { order: 0; }
     .info { padding: 26px 22px; }
+    .case { grid-template-columns: 92px 1fr; grid-template-areas: "img title" "desc desc" "btn btn"; column-gap: 14px; row-gap: 12px; padding: 20px 22px 22px; }
+    .case b { align-self: center; font-size: 18px; }
+    .case .btn { justify-content: center; }
     .cv { padding: 30px 24px; }
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .stats div b { font-size: 24px; }
@@ -286,6 +308,7 @@
       <a href="#experiencia" data-en="Experience">Experiência</a>
       <a href="#habilidades" data-en="Skills">Competências</a>
       <a href="#projetos" data-en="Development">Desenvolvimento</a>
+      <a class="nav-case" href="frogshare" data-en="Case study">Estudo de caso</a>
       <a href="#contato" data-en="Contact">Contato</a>
     </div>
     <div class="nav-right">
@@ -426,6 +449,47 @@
     <div class="projects">
       <article class="project">
         <div class="shot">
+          <a class="browser" href="https://frogshare.onrender.com" target="_blank" rel="noopener" aria-label="Abrir frogshare.onrender.com">
+            <div class="bar"><i></i><i></i><i></i><span>frogshare.onrender.com <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></div>
+            <img src="img/frogshare.png" alt="Página inicial do FrogShare" data-en-alt="FrogShare home page" loading="lazy">
+          </a>
+        </div>
+        <div class="info">
+          <span class="kind" data-en="Desktop app + website · Windows and macOS">App desktop + site · Windows e macOS</span>
+          <h3><img src="img/icon-256.png" alt=""> FrogShare</h3>
+          <p data-en="Streams a game or a window <strong>with the sound of one specific app</strong> to friends who watch right in the browser, with nothing to install.">Transmite um jogo ou uma janela <strong>com o som de um app específico</strong> para amigos que assistem direto no navegador, sem instalar nada.</p>
+          <ul>
+            <li data-en="Works on any network, including strict NAT and mobile internet">Funciona em qualquer rede, inclusive atrás de NAT restrito e internet móvel</li>
+            <li data-en="Light while gaming: video is processed on the graphics card">Leve durante o jogo: o vídeo é processado na placa de vídeo</li>
+            <li data-en="Own installer with automatic updates and integrity checks">Instalador próprio com atualização automática e verificação de integridade</li>
+            <li><span data-en="Monitored in production: <a href='https://dapperjaguar3001.grafana.net/public-dashboards/3a11515df553488593a8d7468063e882' target='_blank' rel='noopener'>live Grafana dashboard</a> and alerts on Discord">Monitorado em produção: <a href="https://dapperjaguar3001.grafana.net/public-dashboards/3a11515df553488593a8d7468063e882" target="_blank" rel="noopener">painel ao vivo no Grafana</a> e alertas no Discord</span></li>
+          </ul>
+          <div class="chips"><span class="chip">Electron</span><span class="chip">Node.js</span><span class="chip">WebRTC</span><span class="chip">C#</span><span class="chip">Swift</span><span class="chip">Cloudflare</span><span class="chip">Supabase</span><span class="chip">Grafana</span></div>
+          <div class="actions">
+            <a class="btn btn-primary btn-sm" href="https://frogshare.onrender.com" target="_blank" rel="noopener">
+              <span data-en="Visit site">Acessar site</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-sm" href="https://github.com/IgorFigueiredo28/frogshare/releases/latest/download/FrogShare-Setup.exe">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+              <span data-en="Download app">Baixar app</span>
+            </a>
+            <a class="btn btn-ghost btn-sm" href="https://github.com/IgorFigueiredo28/frogshare" target="_blank" rel="noopener" data-en="Code">Código</a>
+          </div>
+        </div>
+        <a class="case" href="frogshare">
+          <img src="img/frogshare-painel.png" alt="" loading="lazy">
+          <b data-en="How FrogShare works under the hood">Como o FrogShare funciona por dentro</b>
+          <span class="desc" data-en="A case study with the architecture, six decisions backed by measurements and the production monitoring, with real usage numbers.">Estudo de caso com a arquitetura, seis decisões tomadas com medições e o monitoramento em produção, com números reais.</span>
+          <span class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5A1.5 1.5 0 013.5 4H9a3 3 0 013 3v13a2.5 2.5 0 00-2.5-2.5h-6A1.5 1.5 0 012 16z"/><path d="M22 5.5A1.5 1.5 0 0020.5 4H15a3 3 0 00-3 3v13a2.5 2.5 0 012.5-2.5h6A1.5 1.5 0 0022 16z"/></svg>
+            <span data-en="Read the case study">Ler o estudo de caso</span>
+          </span>
+        </a>
+      </article>
+
+      <article class="project">
+        <div class="shot">
           <div class="tools">
             <div class="bar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h10a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2zm3 3v1.5h2V16h1.5v-5.5h2V9H7zm11-1a2.5 2.5 0 110-5 2.5 2.5 0 010 5zm-1 1h4a1 1 0 011 1v5a3 3 0 01-3 3h-1.2c.13-.32.2-.65.2-1V9z"/></svg>microsoft-teams · MCP</div>
             <div class="grp"><small data-en="Channels">Canais</small><code>LIST_TEAMS</code><code>LIST_CHANNELS</code><code>SEND_MESSAGE</code><code>REPLY_TO_MESSAGE</code><code>EDIT_CHANNEL_MESSAGE</code><code>REACT_TO_CHANNEL_MESSAGE</code></div>
@@ -451,39 +515,6 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </a>
             <a class="btn btn-ghost btn-sm" href="https://github.com/decocms/mcps/pull/444" target="_blank" rel="noopener">Pull request</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="project">
-        <div class="shot">
-          <a class="browser" href="https://frogshare.onrender.com" target="_blank" rel="noopener" aria-label="Abrir frogshare.onrender.com">
-            <div class="bar"><i></i><i></i><i></i><span>frogshare.onrender.com <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></div>
-            <img src="img/frogshare.png" alt="Página inicial do FrogShare" data-en-alt="FrogShare home page" loading="lazy">
-          </a>
-        </div>
-        <div class="info">
-          <span class="kind" data-en="Desktop app + website · Windows and macOS">App desktop + site · Windows e macOS</span>
-          <h3><img src="img/icon-256.png" alt=""> FrogShare</h3>
-          <p data-en="Streams a game or a window <strong>with the sound of one specific app</strong> to friends who watch right in the browser, with nothing to install.">Transmite um jogo ou uma janela <strong>com o som de um app específico</strong> para amigos que assistem direto no navegador, sem instalar nada.</p>
-          <ul>
-            <li data-en="Works on any network, including strict NAT and mobile internet">Funciona em qualquer rede, inclusive atrás de NAT restrito e internet móvel</li>
-            <li data-en="Light while gaming: video is processed on the graphics card">Leve durante o jogo: o vídeo é processado na placa de vídeo</li>
-            <li data-en="Own installer with automatic updates and integrity checks">Instalador próprio com atualização automática e verificação de integridade</li>
-            <li><span data-en="Monitored in production: <a href='https://dapperjaguar3001.grafana.net/public-dashboards/3a11515df553488593a8d7468063e882' target='_blank' rel='noopener'>live Grafana dashboard</a> and alerts on Discord">Monitorado em produção: <a href="https://dapperjaguar3001.grafana.net/public-dashboards/3a11515df553488593a8d7468063e882" target="_blank" rel="noopener">painel ao vivo no Grafana</a> e alertas no Discord</span></li>
-          </ul>
-          <div class="chips"><span class="chip">Electron</span><span class="chip">Node.js</span><span class="chip">WebRTC</span><span class="chip">C#</span><span class="chip">Swift</span><span class="chip">Cloudflare</span><span class="chip">Supabase</span><span class="chip">Grafana</span></div>
-          <div class="actions">
-            <a class="btn btn-primary btn-sm" href="https://frogshare.onrender.com" target="_blank" rel="noopener">
-              <span data-en="Visit site">Acessar site</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
-            </a>
-            <a class="btn btn-ghost btn-sm" href="frogshare.html" data-en="Case study">Estudo de caso</a>
-            <a class="btn btn-ghost btn-sm" href="https://github.com/IgorFigueiredo28/frogshare/releases/latest/download/FrogShare-Setup.exe">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
-              <span data-en="Download app">Baixar app</span>
-            </a>
-            <a class="btn btn-ghost btn-sm" href="https://github.com/IgorFigueiredo28/frogshare" target="_blank" rel="noopener" data-en="Code">Código</a>
           </div>
         </div>
       </article>
