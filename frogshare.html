@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FrogShare, estudo de caso | Igor Figueiredo</title>
+<meta name="description" content="Como eu construí o FrogShare: app para Windows e Mac, site para assistir e transmitir pelo navegador, vídeo na placa de vídeo, servidor de mídia da Cloudflare e monitoramento em produção no Grafana.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  // Aplica tema e idioma antes do primeiro paint (evita piscar). Mesmas escolhas da página principal.
+  (function () {
+    try {
+      var t = localStorage.getItem("tema");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      var l = localStorage.getItem("idioma");
+      if (!l) l = (navigator.language || "pt").toLowerCase().indexOf("pt") === 0 ? "pt" : "en";
+      document.documentElement.dataset.lang = l;
+    } catch (e) {}
+  })();
+</script>
+<style>
+  :root {
+    --bg: #F3FBF2; --bg-2: #E6F6E3; --card: #FFFFFF; --ink: #13301A; --muted: #4E6B55; --line: #CFE8CB;
+    --green: #3FAF4F; --green-strong: #2A8C3A; --green-soft: #D4F2CF; --lime: #B8EB8A; --bar: #EEF5EC; --on-green: #FFFFFF;
+    --blue: #3B6FD8; --blue-soft: #DCE7FB; --yellow: #B58A00; --yellow-soft: #FBF0C8; --purple: #7A4FC4; --purple-soft: #ECE3FA;
+    --shadow: 0 1px 2px rgba(19,48,26,.06), 0 12px 32px -12px rgba(19,48,26,.18);
+    --shot-shadow: 0 16px 36px -14px rgba(19,48,26,.4);
+    --glow: rgba(184,235,138,.55); --glow-2: rgba(184,235,138,.35);
+    --radius: 22px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1810; --bg-2: #112016; --card: #15261A; --ink: #E4F3E6; --muted: #9BB7A1;
+      --line: #23402B; --green: #3FAF4F; --green-strong: #6AD67A; --green-soft: #1C3A24; --lime: #24552F; --bar: #1B2F21;
+      --blue: #8FB2FF; --blue-soft: #1B2A47; --yellow: #F2CC5B; --yellow-soft: #3A3215; --purple: #C2A3FF; --purple-soft: #2C2145;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.6);
+      --shot-shadow: 0 16px 36px -14px rgba(0,0,0,.7);
+      --glow: rgba(63,175,79,.16); --glow-2: rgba(63,175,79,.10);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D1810; --bg-2: #112016; --card: #15261A; --ink: #E4F3E6; --muted: #9BB7A1;
+    --line: #23402B; --green: #3FAF4F; --green-strong: #6AD67A; --green-soft: #1C3A24; --lime: #24552F; --bar: #1B2F21;
+    --blue: #8FB2FF; --blue-soft: #1B2A47; --yellow: #F2CC5B; --yellow-soft: #3A3215; --purple: #C2A3FF; --purple-soft: #2C2145;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.6);
+    --shot-shadow: 0 16px 36px -14px rgba(0,0,0,.7);
+    --glow: rgba(63,175,79,.16); --glow-2: rgba(63,175,79,.10);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; transition: background .2s, color .2s; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: Fredoka, Inter, sans-serif; line-height: 1.1; margin: 0; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* nav (igual à página principal) */
+  nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 64px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: Fredoka; font-weight: 600; font-size: 20px; text-decoration: none; white-space: nowrap; }
+  .logo img { width: 32px; height: 32px; }
+  .logo b { color: var(--green-strong); }
+  .nav-right { display: flex; align-items: center; gap: 8px; }
+  .toggle { height: 38px; min-width: 38px; padding: 0 10px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; display: inline-grid; place-items: center; font: 600 13px Inter, sans-serif; }
+  .toggle:hover { border-color: var(--green); }
+  .toggle svg { width: 18px; height: 18px; }
+  .lang { display: inline-flex; padding: 3px; gap: 2px; }
+  .lang span { padding: 4px 8px; border-radius: 999px; color: var(--muted); }
+  [data-lang="pt"] .lang .l-pt, [data-lang="en"] .lang .l-en { background: var(--green); color: var(--on-green); }
+  .icon-sun { display: none; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .icon-sun { display: block; } :root:not([data-theme="light"]) .icon-moon { display: none; } }
+  :root[data-theme="dark"] .icon-sun { display: block; }
+  :root[data-theme="dark"] .icon-moon { display: none; }
+  .back { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; color: var(--muted); text-decoration: none; }
+  .back:hover { color: var(--green-strong); }
+  .back svg { width: 16px; height: 16px; }
+
+  /* botões */
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1.5px solid transparent; transition: transform .15s, background .15s; cursor: pointer; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+  .btn-primary { background: var(--green); color: var(--on-green); box-shadow: 0 8px 20px -8px rgba(63,175,79,.7); }
+  .btn-primary:hover { background: #2A8C3A; }
+  .btn-ghost { border-color: var(--line); background: var(--card); color: var(--ink); }
+  .btn-ghost:hover { border-color: var(--green); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  /* topo */
+  .hero { padding: 72px 0 56px; background: radial-gradient(circle 320px at 88% 30%, var(--glow), transparent), radial-gradient(circle 260px at 4% 70%, var(--glow-2), transparent); }
+  .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: Fredoka; font-weight: 600; font-size: 18px; color: var(--green-strong); margin-bottom: 14px; }
+  .eyebrow img { width: 30px; height: 30px; }
+  .hero h1 { font-size: clamp(34px, 5.2vw, 56px); letter-spacing: -.5px; max-width: 900px; margin-bottom: 18px; }
+  .hero p.lead { font-size: 18px; color: var(--muted); max-width: 720px; margin: 0 0 30px; }
+  .numbers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 44px; }
+  .numbers div { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .numbers b { display: block; font-family: Fredoka; font-size: 34px; line-height: 1.1; color: var(--green-strong); }
+  .numbers span { font-size: 14px; color: var(--muted); line-height: 1.4; display: block; margin-top: 4px; }
+  .note { font-size: 13px; color: var(--muted); margin-top: 12px; }
+
+  /* seções */
+  section { padding: 64px 0; }
+  .alt { background: var(--bg-2); }
+  .sec-head { margin-bottom: 30px; }
+  .sec-head small { color: var(--green-strong); font-weight: 600; font-size: 14px; }
+  .sec-head h2 { font-size: clamp(28px, 3.6vw, 38px); margin-top: 6px; }
+  .sec-head p { color: var(--muted); max-width: 720px; margin: 12px 0 0; }
+
+  .pieces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .piece { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
+  .piece .ic { width: 42px; height: 42px; border-radius: 12px; background: var(--green-soft); color: var(--green-strong); display: grid; place-items: center; margin-bottom: 14px; }
+  .piece .ic svg { width: 22px; height: 22px; }
+  .piece h3 { font-size: 21px; margin-bottom: 8px; }
+  .piece p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  /* arquitetura */
+  .figure { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); overflow-x: auto; }
+  .arch { display: block; width: 100%; min-width: 760px; height: auto; }
+  .arch .box { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+  .arch .box-green { fill: var(--green-soft); stroke: var(--green); }
+  .arch .box-blue { fill: var(--blue-soft); stroke: var(--blue); }
+  .arch .box-purple { fill: var(--purple-soft); stroke: var(--purple); }
+  .arch .t { font: 600 16px Fredoka, Inter, sans-serif; fill: var(--ink); }
+  .arch .s { font: 12.5px Inter, sans-serif; fill: var(--muted); }
+  .arch .l { font: 600 12px Inter, sans-serif; }
+  .arch .sig { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; fill: none; }
+  .arch .direct { stroke: var(--green); stroke-width: 3; fill: none; }
+  .arch .relay { stroke: var(--yellow); stroke-width: 2.5; fill: none; }
+  .arch .sfu { stroke: var(--blue); stroke-width: 2.5; fill: none; }
+  .arch .tele { stroke: var(--purple); stroke-width: 2; fill: none; }
+  .arch .c-green { fill: var(--green-strong); } .arch .c-yellow { fill: var(--yellow); } .arch .c-blue { fill: var(--blue); } .arch .c-purple { fill: var(--purple); } .arch .c-muted { fill: var(--muted); }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 14px; font-size: 14px; color: var(--muted); }
+  .legend i { display: inline-block; width: 22px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 6px; }
+
+  /* decisões */
+  .decisions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .decision { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px 26px; display: flex; flex-direction: column; gap: 10px; }
+  .decision h3 { font-size: 21px; }
+  .decision p { margin: 0; color: var(--muted); font-size: 15px; }
+  .decision p strong { color: var(--ink); }
+  .metric { align-self: flex-start; display: inline-flex; align-items: baseline; gap: 8px; background: var(--green-soft); color: var(--green-strong); border-radius: 12px; padding: 6px 12px; font-size: 14px; font-weight: 600; }
+  .metric b { font-family: Fredoka; font-size: 22px; }
+
+  /* monitoramento */
+  .monitor { display: grid; grid-template-columns: 1.35fr 1fr; gap: 28px; align-items: start; }
+  .shot { display: block; border-radius: 14px; overflow: hidden; box-shadow: var(--shot-shadow); border: 1px solid var(--line); text-decoration: none; background: #111217; transition: transform .2s; }
+  .shot:hover { transform: translateY(-3px); }
+  .shot .bar { display: flex; align-items: center; gap: 6px; padding: 9px 12px; background: var(--bar); border-bottom: 1px solid var(--line); }
+  .shot .bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+  .shot .bar span { margin-left: 8px; font-size: 12px; color: var(--muted); background: var(--card); padding: 2px 10px; border-radius: 6px; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .checks { margin: 0 0 24px; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .checks li { display: flex; gap: 10px; font-size: 15px; color: var(--muted); }
+  .checks li strong { color: var(--ink); }
+  .checks li::before { content: ""; flex: none; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%;
+    background: var(--green-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233FAF4F' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/11px no-repeat; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 13px; padding: 4px 11px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); color: var(--ink); }
+
+  .closing { background: linear-gradient(135deg, #3FAF4F 0%, #2A8C3A 100%); color: #fff; border-radius: var(--radius); padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; box-shadow: var(--shadow); }
+  .closing h2 { font-size: 30px; margin-bottom: 6px; }
+  .closing p { margin: 0; opacity: .9; max-width: 520px; }
+  .closing .btn-primary { background: #fff; color: #2A8C3A; box-shadow: none; }
+  .closing .btn-primary:hover { background: #D4F2CF; }
+  .closing .btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.55); }
+  .closing .btn-ghost:hover { border-color: #fff; }
+
+  footer { padding: 40px 0 56px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 28px; }
+  footer a { text-decoration: none; font-weight: 500; }
+  footer a:hover { color: var(--green-strong); }
+
+  @media (max-width: 960px) { .pieces { grid-template-columns: 1fr; } .monitor { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) {
+    .hero { padding: 44px 0 40px; }
+    .numbers { grid-template-columns: repeat(2, 1fr); }
+    .decisions { grid-template-columns: 1fr; }
+    .wrap { padding: 0 16px; }
+    .closing { padding: 28px 22px; }
+  }
+  @media (max-width: 480px) { .logo span { display: none; } .numbers b { font-size: 28px; } }
+  @media (prefers-reduced-motion: reduce) { .btn, .shot { transition: none; } .btn:hover, .shot:hover { transform: none; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="index.html"><img src="img/favicon.svg" alt=""><span>Igor <b>Figueiredo</b></span></a>
+    <div class="nav-right">
+      <a class="back" href="index.html#projetos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><span data-en="All projects">Todos os projetos</span></a>
+      <button class="toggle lang" id="btn-lang" type="button" aria-label="Mudar idioma / Change language"><span class="l-pt">PT</span><span class="l-en">EN</span></button>
+      <button class="toggle" id="btn-tema" type="button" aria-label="Alternar tema claro/escuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><img src="img/icon-256.png" alt=""><span>FrogShare</span></div>
+    <h1 data-en="Streaming a game to friends, light on the PC and watchable in any browser">Transmitir o jogo para os amigos, leve no PC e para assistir em qualquer navegador</h1>
+    <p class="lead" data-en="I built FrogShare and keep it running in production: a Windows and Mac app that streams a window with the sound of one app, a site where friends watch with nothing to install, streaming from the browser itself, and live monitoring with the real numbers.">Eu criei o FrogShare e mantenho ele em produção: um app para Windows e Mac que transmite uma janela com o som de um app só, um site onde os amigos assistem sem instalar nada, transmissão pelo próprio navegador e um monitoramento ao vivo com os números de verdade.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="https://dapperjaguar3001.grafana.net/public-dashboards/3a11515df553488593a8d7468063e882" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+        <span data-en="Live dashboard">Painel ao vivo</span>
+      </a>
+      <a class="btn btn-ghost" href="https://frogshare.onrender.com" target="_blank" rel="noopener">
+        <span data-en="Visit site">Acessar site</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/IgorFigueiredo28/frogshare" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .5z"/></svg>
+        <span data-en="Code">Código</span>
+      </a>
+    </div>
+    <div class="numbers">
+      <div><b>133 h</b><span data-en="watched in one week">assistidas em uma semana</span></div>
+      <div><b>53 h</b><span data-en="streamed in the same week">transmitidas na mesma semana</span></div>
+      <div><b data-en="97.4%">97,4%</b><span data-en="of the time watched with the picture moving">do tempo assistido com a imagem rodando</span></div>
+      <div><b>R$ 0</b><span data-en="of infrastructure: everything on free plans, with the limits watched">de infraestrutura: tudo em planos grátis, com os limites vigiados</span></div>
+    </div>
+    <p class="note" data-en="The 7 days up to November 18, 2026, from the production monitoring.">Os 7 dias até 18 de novembro de 2026, tirados do monitoramento em produção.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <small data-en="What it is">O que é</small>
+      <h2 data-en="Three pieces that work together">Três partes que funcionam juntas</h2>
+      <p data-en="I wanted to show a match to friends with the quality I chose and only the game's sound, and for them to watch from anywhere, even on the phone, without installing anything.">Eu queria mostrar uma partida para os amigos com a qualidade que eu escolhesse e só o som do jogo, e que eles assistissem de qualquer lugar, até pelo celular, sem instalar nada.</p>
+    </div>
+    <div class="pieces">
+      <div class="piece">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <h3 data-en="Windows and Mac app">App para Windows e Mac</h3>
+        <p data-en="Picks a window or the screen and the sound of one app. Encodes on the graphics card, updates itself and has a quick pause, camera, group streaming and a fixed link per person.">Escolhe uma janela ou a tela e o som de um app. Codifica na placa de vídeo, se atualiza sozinho e tem pausa rápida, câmera, transmissão em grupo e um link fixo por pessoa.</p>
+      </div>
+      <div class="piece">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div>
+        <h3 data-en="Site to watch">Site para assistir</h3>
+        <p data-en="Opens in any browser, phone included. Reactions, clip of the last 30 seconds, data saver for mobile plans, and it explains a stutter: the streamer's side or yours.">Abre em qualquer navegador, inclusive no celular. Reações, clipe dos últimos 30 segundos, economia de dados para plano móvel, e explica uma travada: se é do lado de quem transmite ou do seu.</p>
+      </div>
+      <div class="piece">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg></div>
+        <h3 data-en="Streaming from the browser">Transmitir pelo navegador</h3>
+        <p data-en="For whoever can't install the app: the same fixed link, camera over the picture, pause and group streaming, straight from Chrome or Edge.">Para quem não pode instalar o app: o mesmo link fixo, câmera sobre a imagem, pausa e transmissão em grupo, direto do Chrome ou do Edge.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <small data-en="Architecture">Arquitetura</small>
+      <h2 data-en="Video goes straight between people; the server only introduces them">O vídeo vai direto entre as pessoas; o servidor só apresenta uma à outra</h2>
+      <p data-en="The signaling server never touches the video, so it fits a free plan. The path the picture takes is chosen per connection: direct when it can, through Cloudflare when the network blocks it or when many people watch.">O servidor de sinalização nunca toca no vídeo, por isso cabe num plano grátis. O caminho da imagem é escolhido por conexão: direto quando dá, pela Cloudflare quando a rede bloqueia ou quando muita gente assiste.</p>
+    </div>
+    <div class="figure">
+      <svg class="arch" viewBox="0 0 900 384" role="img" aria-labelledby="arch-title">
+        <title id="arch-title" data-en="FrogShare architecture">Arquitetura do FrogShare</title>
+        <defs>
+          <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="c-green"/></marker>
+          <marker id="a-yellow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="c-yellow"/></marker>
+          <marker id="a-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="c-blue"/></marker>
+          <marker id="a-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="c-purple"/></marker>
+          <marker id="a-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="c-muted"/></marker>
+        </defs>
+
+        <!-- Who streams and who watches -->
+        <rect class="box box-green" x="16" y="20" width="220" height="92" rx="14"/>
+        <text class="t" x="126" y="54" text-anchor="middle" data-en="Streamer">Quem transmite</text>
+        <text class="s" x="126" y="76" text-anchor="middle" data-en="Electron app (C#/Swift audio)">App Electron (áudio em C#/Swift)</text>
+        <text class="s" x="126" y="95" text-anchor="middle" data-en="or the browser">ou o navegador</text>
+
+        <rect class="box box-green" x="664" y="20" width="220" height="92" rx="14"/>
+        <text class="t" x="774" y="54" text-anchor="middle" data-en="Viewers">Quem assiste</text>
+        <text class="s" x="774" y="76" text-anchor="middle" data-en="any browser,">qualquer navegador,</text>
+        <text class="s" x="774" y="95" text-anchor="middle" data-en="phone included">inclusive no celular</text>
+
+        <!-- Media paths -->
+        <path class="direct" d="M236 46 L658 46" marker-end="url(#a-green)"/>
+        <text class="l c-green" x="447" y="36" text-anchor="middle" data-en="direct (P2P) · 89% · free">direto (P2P) · 89% · grátis</text>
+
+        <rect class="box box-blue" x="350" y="124" width="200" height="72" rx="14"/>
+        <text class="t" x="450" y="154" text-anchor="middle">Cloudflare Realtime</text>
+        <text class="s" x="450" y="176" text-anchor="middle" data-en="TURN relay · media server">relay TURN · servidor de mídia</text>
+
+        <path class="relay" d="M236 76 C300 76, 300 146, 346 146" marker-end="url(#a-yellow)"/>
+        <path class="relay" d="M554 146 C600 146, 600 76, 658 76" marker-end="url(#a-yellow)"/>
+        <path class="sfu" d="M236 94 C286 94, 286 174, 346 174" marker-end="url(#a-blue)"/>
+        <path class="sfu" d="M554 174 C614 174, 614 94, 658 94" marker-end="url(#a-blue)"/>
+        <text class="l c-yellow" x="450" y="220" text-anchor="middle" data-en="relay when the network blocks · 6%">relay quando a rede bloqueia · 6%</text>
+        <text class="l c-blue" x="450" y="238" text-anchor="middle" data-en="one copy for everyone from 3 viewers · 5%">uma cópia para todos a partir de 3 pessoas · 5%</text>
+
+        <!-- Signaling, and the reports it stores -->
+        <path class="sig" d="M110 112 L110 284" marker-end="url(#a-muted)"/>
+        <path class="sig" d="M774 112 L774 252 Q774 262 764 262 L184 262 Q172 262 172 274 L172 284" marker-end="url(#a-muted)"/>
+        <text class="l c-muted" x="120" y="204">WebSocket</text>
+        <text class="l c-muted" x="784" y="204">WebSocket</text>
+
+        <rect class="box" x="16" y="290" width="210" height="80" rx="14"/>
+        <text class="t" x="121" y="320" text-anchor="middle" data-en="Signaling">Sinalização</text>
+        <text class="s" x="121" y="342" text-anchor="middle">Node.js · Socket.IO · Render</text>
+        <text class="s" x="121" y="360" text-anchor="middle" data-en="and receives the reports">e recebe os relatórios</text>
+
+        <rect class="box box-purple" x="258" y="290" width="220" height="80" rx="14"/>
+        <text class="t" x="368" y="320" text-anchor="middle">Supabase · PostgreSQL</text>
+        <text class="s" x="368" y="342" text-anchor="middle" data-en="one report a minute,">um relatório por minuto,</text>
+        <text class="s" x="368" y="360" text-anchor="middle" data-en="numbers only">só números</text>
+
+        <rect class="box box-purple" x="510" y="290" width="180" height="80" rx="14"/>
+        <text class="t" x="600" y="320" text-anchor="middle">Grafana Cloud</text>
+        <text class="s" x="600" y="342" text-anchor="middle" data-en="dashboard and 6 alerts">painel e 6 alertas</text>
+
+        <rect class="box box-purple" x="722" y="290" width="162" height="80" rx="14"/>
+        <text class="t" x="803" y="320" text-anchor="middle">Discord</text>
+        <text class="s" x="803" y="342" text-anchor="middle" data-en="alerts in Portuguese">avisos em português</text>
+
+        <path class="tele" d="M226 330 L252 330" marker-end="url(#a-purple)"/>
+        <path class="tele" d="M478 330 L504 330" marker-end="url(#a-purple)"/>
+        <path class="tele" d="M690 330 L716 330" marker-end="url(#a-purple)"/>
+      </svg>
+      <div class="legend">
+        <span><i style="border-color: var(--green)"></i><span data-en="video, direct">vídeo direto</span></span>
+        <span><i style="border-color: var(--yellow)"></i><span data-en="video through a relay">vídeo pelo relay</span></span>
+        <span><i style="border-color: var(--blue)"></i><span data-en="video through the media server">vídeo pelo servidor de mídia</span></span>
+        <span><i style="border-color: var(--purple)"></i><span data-en="monitoring">monitoramento</span></span>
+        <span><i style="border-color: var(--muted); border-top-style: dashed"></i><span data-en="signaling">sinalização</span></span>
+      </div>
+      <p class="note" data-en="Percentages: share of the time watched in the last 7 days.">Porcentagens: parte do tempo assistido nos últimos 7 dias.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <small data-en="Engineering">Engenharia</small>
+      <h2 data-en="Decisions measured, not guessed">Decisões medidas, não chutadas</h2>
+      <p data-en="Each of these came from a real problem, measured before and after the change.">Cada uma veio de um problema real, medido antes e depois da mudança.</p>
+    </div>
+    <div class="decisions">
+      <article class="decision">
+        <h3 data-en="Video on the graphics card">Vídeo na placa de vídeo</h3>
+        <p data-en="Screen capture hands over frames in the processor's memory, which the graphics card's encoder refuses: video fell back to a software encoder at ~31 fps. Redrawing each frame on a GPU canvas, in a separate thread, gives it back to the card: 55–57 fps in 1080p.">A captura de tela entrega os quadros na memória do processador, que o codificador da placa de vídeo recusa: o vídeo caía num codificador por software, a ~31 fps. Redesenhar cada quadro numa canvas da GPU, numa thread separada, devolve o trabalho para a placa: 55–57 fps em 1080p.</p>
+        <span class="metric"><b data-en="50–64 → 4.5 ms">50–64 → 4,5 ms</b><span data-en="per 1080p frame">por quadro 1080p</span></span>
+      </article>
+      <article class="decision">
+        <h3 data-en="Capture that doesn't drop the game's FPS">Captura que não derruba o FPS do jogo</h3>
+        <p data-en="Switching the default capture (DXGI) to Windows Graphics Capture took the game's frame rate loss down and kept the mouse cursor out of the stream.">Trocar a captura padrão (DXGI) pela Windows Graphics Capture reduziu a perda de FPS do jogo e tirou o cursor do mouse da transmissão.</p>
+        <span class="metric"><b>12% → 3–5%</b><span data-en="of the game's FPS lost">de FPS perdido no jogo</span></span>
+      </article>
+      <article class="decision">
+        <h3 data-en="One copy for everyone">Uma cópia só para todos</h3>
+        <p data-en="From 3 viewers on, the app sends one copy to Cloudflare's media server instead of one per person. Telling the encoder to use the Main profile behind a server that only negotiates Baseline kept it on the graphics card.">A partir de 3 pessoas, o app manda uma cópia só para o servidor de mídia da Cloudflare, em vez de uma por pessoa. Usar o perfil Main por trás de um servidor que só negocia Baseline manteve o vídeo na placa de vídeo.</p>
+        <span class="metric"><b data-en="11.4 → 4.6 ms">11,4 → 4,6 ms</b><span data-en="per 1080p frame">por quadro 1080p</span></span>
+      </article>
+      <article class="decision">
+        <h3 data-en="Only the game's sound">Só o som do jogo</h3>
+        <p data-en="A native helper in C# (Windows process loopback) and in Swift (macOS Core Audio taps) captures one app's sound, or the whole PC minus Discord and the soundboard, so friends don't hear the call twice.">Um módulo nativo em C# (process loopback do Windows) e em Swift (Core Audio taps do macOS) captura o som de um app só, ou o PC inteiro menos o Discord e o soundboard, para os amigos não ouvirem a chamada duas vezes.</p>
+        <span class="metric"><b>2</b><span data-en="native helpers, Windows and macOS">módulos nativos, Windows e macOS</span></span>
+      </article>
+      <article class="decision">
+        <h3 data-en="Smooth even in a background tab">Fluido até em segundo plano</h3>
+        <p data-en="When streaming from the browser, the whole video path runs in a worker. With the tab hidden behind the game, the browser cut the page's timers to about one per second, and the picture kept its frame rate.">Na transmissão pelo navegador, todo o caminho do vídeo roda em um worker. Com a aba escondida atrás do jogo, o navegador limitou os timers da página a cerca de um por segundo, e a imagem manteve o ritmo.</p>
+        <span class="metric"><b>52 fps</b><span data-en="with the tab in the background">com a aba em segundo plano</span></span>
+      </article>
+      <article class="decision">
+        <h3 data-en="It adapts to the PC">Se adapta ao PC</h3>
+        <p data-en="When the PC can't keep up with 60 fps, with a heavy game or a busy graphics card, the stream drops by itself to a steady 30 fps and tries 60 again after 3 minutes, waiting up to 30 minutes if it struggles again.">Quando o PC não dá conta de 60 fps, com o jogo pesado ou a placa de vídeo ocupada, a transmissão cai sozinha para 30 fps estáveis e tenta 60 de novo depois de 3 minutos, esperando até 30 minutos se voltar a apertar.</p>
+        <span class="metric"><b>10 s</b><span data-en="of struggling before dropping to 30 fps">de aperto antes de cair para 30 fps</span></span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <small data-en="Production">Produção</small>
+      <h2 data-en="Monitored like a real product">Monitorado como produto de verdade</h2>
+      <p data-en="Every person watching or streaming sends one report per minute. The dashboard shows the week's numbers and anyone can open it live.">Cada pessoa assistindo ou transmitindo manda um relatório por minuto. O painel mostra os números da semana e qualquer pessoa pode abrir ao vivo.</p>
+    </div>
+    <div class="monitor">
+      <a class="shot" href="https://dapperjaguar3001.grafana.net/public-dashboards/3a11515df553488593a8d7468063e882" target="_blank" rel="noopener" aria-label="Abrir o painel ao vivo" data-en-label="Open the live dashboard">
+        <div class="bar"><i></i><i></i><i></i><span data-en="FrogShare live · Grafana">FrogShare ao vivo · Grafana</span></div>
+        <img src="img/frogshare-painel.png" alt="Painel do Grafana com os números do FrogShare: horas assistidas, imagem rodando 97,4% do tempo, uso da Cloudflare e motivos das travadas" data-en-alt="Grafana dashboard with FrogShare's numbers: hours watched, picture moving 97.4% of the time, Cloudflare usage and reasons for stutters" loading="lazy">
+      </a>
+      <div>
+        <ul class="checks">
+          <li><span data-en="<strong>Numbers only, nothing personal:</strong> SQL views drop room and people ids before anything reaches the dashboard, and the dashboard's login can read nothing else.">
+            <strong>Só números, nada pessoal:</strong> visões SQL tiram ids de sala e de pessoas antes de qualquer dado chegar ao painel, e o login do painel não lê mais nada.</span></li>
+          <li><span data-en="<strong>Why it froze:</strong> each viewer's page tells the streamer's side apart from the viewer's. In the last week, over 9 in 10 minutes with a freeze came from the streamer's side, most of them from the capture.">
+            <strong>Por que travou:</strong> a página de quem assiste separa o lado de quem transmite do lado de quem assiste. Na última semana, mais de 9 em cada 10 minutos com travada vieram de quem transmite, a maioria da captura.</span></li>
+          <li><span data-en="<strong>6 alerts on Discord:</strong> an error not seen in the last month, many errors at once, viewers freezing, Cloudflare at 70% and 90% of the month, and the database over 400 MB.">
+            <strong>6 alertas no Discord:</strong> erro que não aparecia no último mês, muitos erros de uma vez, quem assiste travando, Cloudflare em 70% e 90% do mês e o banco passando de 400 MB.</span></li>
+          <li><span data-en="<strong>Zero cost, on purpose:</strong> free plans from Render, Supabase, Cloudflare and Grafana, with each limit on the dashboard. The server stops using Cloudflare at 900 GB a month, before the 1,000 free GB.">
+            <strong>Custo zero, de propósito:</strong> planos grátis de Render, Supabase, Cloudflare e Grafana, com cada limite no painel. O servidor para de usar a Cloudflare em 900 GB no mês, antes dos 1.000 GB grátis.</span></li>
+          <li><span data-en="<strong>Releases:</strong> Windows installer with update checked by hash, and the Mac app built on GitHub Actions for every release.">
+            <strong>Versões:</strong> instalador do Windows com atualização conferida por hash, e o app do Mac montado no GitHub Actions a cada versão.</span></li>
+        </ul>
+        <div class="chips">
+          <span class="chip">Electron</span><span class="chip">Node.js</span><span class="chip">Socket.IO</span><span class="chip">WebRTC</span>
+          <span class="chip">WebCodecs</span><span class="chip">C#</span><span class="chip">Swift</span><span class="chip">Cloudflare Realtime</span>
+          <span class="chip">Supabase</span><span class="chip">PostgreSQL</span><span class="chip">Grafana</span><span class="chip">Render</span><span class="chip">GitHub Actions</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="closing">
+      <div>
+        <h2 data-en="Try it">Experimente</h2>
+        <p data-en="Watching needs nothing installed. To stream, the app is for Windows and Mac, or straight from the browser.">Para assistir não precisa instalar nada. Para transmitir, o app é para Windows e Mac, ou direto pelo navegador.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://frogshare.onrender.com" target="_blank" rel="noopener"><span data-en="Visit site">Acessar site</span></a>
+        <a class="btn btn-ghost" href="https://github.com/IgorFigueiredo28/frogshare/releases/latest/download/FrogShare-Setup.exe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+          <span data-en="App for Windows">App para Windows</span>
+        </a>
+        <a class="btn btn-ghost" href="index.html#projetos"><span data-en="Other projects">Outros projetos</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Igor Meneses Figueiredo</span>
+    <span><a href="index.html" data-en="Portfolio">Portfólio</a> · <a href="https://github.com/IgorFigueiredo28" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/igor-meneses-figueiredo/" target="_blank" rel="noopener">LinkedIn</a></span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var META = {
+      pt: { title: "FrogShare, estudo de caso | Igor Figueiredo", html: "pt-BR" },
+      en: { title: "FrogShare, case study | Igor Figueiredo", html: "en" }
+    };
+    // Guarda o texto em português de cada elemento para poder voltar.
+    var textos = document.querySelectorAll("[data-en]");
+    textos.forEach(function (el) { el.dataset.pt = el.innerHTML; });
+    var alts = document.querySelectorAll("[data-en-alt]");
+    alts.forEach(function (el) { el.dataset.ptAlt = el.alt; });
+    var labels = document.querySelectorAll("[data-en-label]");
+    labels.forEach(function (el) { el.dataset.ptLabel = el.getAttribute("aria-label"); });
+
+    function aplicaIdioma(l) {
+      root.dataset.lang = l;
+      root.lang = META[l].html;
+      document.title = META[l].title;
+      textos.forEach(function (el) { el.innerHTML = l === "en" ? el.dataset.en : el.dataset.pt; });
+      alts.forEach(function (el) { el.alt = l === "en" ? el.dataset.enAlt : el.dataset.ptAlt; });
+      labels.forEach(function (el) { el.setAttribute("aria-label", l === "en" ? el.dataset.enLabel : el.dataset.ptLabel); });
+    }
+    aplicaIdioma(root.dataset.lang === "en" ? "en" : "pt");
+
+    document.getElementById("btn-lang").addEventListener("click", function () {
+      var l = root.dataset.lang === "en" ? "pt" : "en";
+      aplicaIdioma(l);
+      try { localStorage.setItem("idioma", l); } catch (e) {}
+    });
+    // Tema: segue o sistema até a pessoa escolher; o botão inverte o que está na tela.
+    document.getElementById("btn-tema").addEventListener("click", function () {
+      var escuroAgora = root.dataset.theme ? root.dataset.theme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      var novo = escuroAgora ? "light" : "dark";
+      root.dataset.theme = novo;
+      try { localStorage.setItem("tema", novo); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>

@@ -204,6 +204,7 @@
   .info p strong { color: var(--ink); }
   .info ul { margin: 0 0 20px; padding: 0; list-style: none; display: grid; gap: 8px; }
   .info li { display: flex; gap: 10px; font-size: 15px; }
+  .info li a { color: var(--green-strong); font-weight: 600; text-underline-offset: 2px; }
   .info li::before { content: ""; flex: none; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%;
     background: var(--green-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233FAF4F' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/11px no-repeat; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
@@ -469,13 +470,15 @@
             <li data-en="Works on any network, including strict NAT and mobile internet">Funciona em qualquer rede, inclusive atrás de NAT restrito e internet móvel</li>
             <li data-en="Light while gaming: video is processed on the graphics card">Leve durante o jogo: o vídeo é processado na placa de vídeo</li>
             <li data-en="Own installer with automatic updates and integrity checks">Instalador próprio com atualização automática e verificação de integridade</li>
+            <li><span data-en="Monitored in production: <a href='https://dapperjaguar3001.grafana.net/public-dashboards/3a11515df553488593a8d7468063e882' target='_blank' rel='noopener'>live Grafana dashboard</a> and alerts on Discord">Monitorado em produção: <a href="https://dapperjaguar3001.grafana.net/public-dashboards/3a11515df553488593a8d7468063e882" target="_blank" rel="noopener">painel ao vivo no Grafana</a> e alertas no Discord</span></li>
           </ul>
-          <div class="chips"><span class="chip">Electron</span><span class="chip">Node.js</span><span class="chip">WebRTC</span><span class="chip">C#</span><span class="chip">Swift</span><span class="chip">Cloudflare</span></div>
+          <div class="chips"><span class="chip">Electron</span><span class="chip">Node.js</span><span class="chip">WebRTC</span><span class="chip">C#</span><span class="chip">Swift</span><span class="chip">Cloudflare</span><span class="chip">Supabase</span><span class="chip">Grafana</span></div>
           <div class="actions">
             <a class="btn btn-primary btn-sm" href="https://frogshare.onrender.com" target="_blank" rel="noopener">
               <span data-en="Visit site">Acessar site</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </a>
+            <a class="btn btn-ghost btn-sm" href="frogshare.html" data-en="Case study">Estudo de caso</a>
             <a class="btn btn-ghost btn-sm" href="https://github.com/IgorFigueiredo28/frogshare/releases/latest/download/FrogShare-Setup.exe">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
               <span data-en="Download app">Baixar app</span>
